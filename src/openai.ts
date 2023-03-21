@@ -1,5 +1,6 @@
 import {Configuration, CreateImageRequestResponseFormatEnum, CreateImageRequestSizeEnum, OpenAIApi} from "openai";
 import DBUtils from "./data.js";
+import { config } from "./config.js";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -13,18 +14,25 @@ const openai = new OpenAIApi(configuration);
  */
 async function chatgpt(username:string,message: string): Promise<string> {
   // 先将用户输入的消息添加到数据库中
+  const checkUserExists = DBUtils.getUserExistsByUsername(username)
   DBUtils.addUserMessage(username, message);
-  const messages = DBUtils.getChatMessage(username);
-  const response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: messages,
-    temperature: 0.6
-  }).then((res) => res.data);
-  if (response.choices[0].message) {
-    return response.choices[0].message.content.replace(/^\n+|\n+$/g, "");
-  } else {
-    return "Something went wrong"
+
+  if (checkUserExists) {
+    const messages = DBUtils.getChatMessage(username);
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: messages,
+      temperature: 0.6
+    }).then((res) => res.data);
+    if (response.choices[0].message) {
+      return response.choices[0].message.content.replace(/^\n+|\n+$/g, "");
+    } else {
+      return "Something went wrong"
+    }
   }
+
+  return config.welcomeMessage;
+  
 }
 
 // const response = await openai.createImage({

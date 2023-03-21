@@ -46,6 +46,14 @@ class DB {
   }
 
   /**
+   * 根据用户名获取用户, 如果用户不存在则返回 false
+   * @param username
+   */
+  public getUserExistsByUsername(username: string): boolean {
+    return DB.data.find((user) => user.username === username) ? true : false;
+  }
+
+  /**
    * 获取用户的聊天记录
    * @param username
    */
