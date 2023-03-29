@@ -82,7 +82,7 @@ class DB {
    */
   public addUserMessage(username: string, message: string): void {
     const user = this.getUserByUsername(username);
-    if (user) {
+    if (user) {      
       user.chatMessage.push({
         role: ChatCompletionRequestMessageRoleEnum.User,
         content: message,
@@ -98,10 +98,10 @@ class DB {
   public addAssistantMessage(username: string, message: string): void {
     const user = this.getUserByUsername(username);
     if (user) {
-      user.chatMessage.push({
-        role: ChatCompletionRequestMessageRoleEnum.Assistant,
-        content: message,
-      });
+      // user.chatMessage.push({
+      //   role: ChatCompletionRequestMessageRoleEnum.Assistant,
+      //   content: message,
+      // });
     }
   }
 
